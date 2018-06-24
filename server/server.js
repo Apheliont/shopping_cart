@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const Product = require('./models/product');
 
 //port listen
-const port = process.env.port || 3000;
+const port = process.env.port || 80;
 
 // mongoose init
 const mongoose = require('mongoose');
@@ -34,17 +34,17 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 mongoose.connect('mongodb://customer:customer777@ds263640.mlab.com:63640/shopping_cart937423434').then(() => {
   // dummy data
-  fsPromise.readFile('./server-product-data.json', 'utf-8')
-    .then(async (data) => {
-      try {
+  // fsPromise.readFile('./server-product-data.json', 'utf-8')
+  //   .then(async (data) => {
+  //     try {
         // const productsData = JSON.parse(data);
         // await mongoose.connection.collections.products.drop();
         // await Product.addProducts(productsData);
         app.listen(port, () => {
           console.log(`Server started on port ${port}`)
         });
-      } catch (e) {
-        console.log(e);
-      }
-    }).catch(err => console.log(err));
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
+    // }).catch(err => console.log(err));
 }).catch(err => console.log(err));
