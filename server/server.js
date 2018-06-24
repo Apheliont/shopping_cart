@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const Product = require('./models/product');
 
 //port listen
-const port = process.env.port || 80;
+const port = process.env.port || 4000;
 
 // mongoose init
 const mongoose = require('mongoose');
