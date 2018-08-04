@@ -1,9 +1,9 @@
 <template>
-  <div class="column is-4 has-text-centered cart-container">
+  <div class="column is-6 is-offset-3 has-text-centered cart-container">
     <div class="cart-title">
       <i class="fas fa-shopping-cart fa-2x"></i>
-      <hr>
     </div>
+    <hr>
     <transition-group
       enter-active-class="fadeInUp animated"
       leave-active-class="fadeOutDown animated"
@@ -18,7 +18,7 @@
       </div>
       <div>
         <button class="button is-danger level-item" @click="removeAll" :disabled="totalQuantity === 0">
-          <i class="fas fa-trash-alt remove-all-icon"></i>Remove all
+          <i class="fas fa-trash-alt remove-all-icon"></i>Удалить все
         </button>
       </div>
     </div>
@@ -40,9 +40,6 @@
     },
     methods: {
       ...mapActions(['removeAll'])
-    },
-    created() {
-      this.$store.dispatch('getCartList');
     }
   }
 </script>
@@ -70,7 +67,7 @@
     flex-flow: row nowrap;
     align-items: flex-end;
     justify-content: space-between;
-    margin-top: auto;
+    margin-top: 20px;
     padding: 5px 20px;
   }
 
@@ -79,7 +76,8 @@
   }
 
   .cart-title {
-    margin: 10px 0 20px 0;
+    margin-top: 10px;
+    padding-bottom: 10px;
   }
 
   .remove-all-icon {

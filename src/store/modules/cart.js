@@ -10,7 +10,7 @@ export const cartModule = {
     totalPrice(state) {
       let total = 0;
       state.cartList.forEach(item => {
-        total += item.quantity * item.product.price;
+        total += item.quantity * item.price;
       });
       return total.toFixed(2);
     },
@@ -30,10 +30,18 @@ export const cartModule = {
   },
 
   actions: {
-    getCartList({commit}) {
-      fetch('/cart')
+    getCartList({commit, rootGetters}) {
+      fetch('/api/user/cart', {
+        headers: rootGetters.tokenHeader
+      })
         .then(res => {
-          return res.json();
+          if (res.status >= 400) {
+            commit('SET_SERVER_AUTHORIZE_RESPONSE', false);
+            return new Error('Доступа нету');
+          } else {
+            commit('SET_SERVER_AUTHORIZE_RESPONSE', true);
+            return res.json();
+          }
         })
         .then(data => {
           commit('UPDATE_CART_LIST', data);
@@ -42,9 +50,10 @@ export const cartModule = {
           console.log(error);
         })
     },
-    removeItem({commit}, payload) {
-      fetch(`/cart/delete/${payload}`, {
-        method: 'DELETE'
+    removeProduct({commit, rootGetters}, payload) {
+      fetch(`/api/user/cart/delete/${payload}`, {
+        method: 'DELETE',
+        headers: rootGetters.tokenHeader
       })
         .then(res => {
           if (res.status === 200) {
@@ -60,14 +69,11 @@ export const cartModule = {
           console.log(error)
         })
     },
-    addItem({commit}, payload) {
-      fetch('/cart', {
+    addProduct({commit, rootGetters}, productId) {
+      fetch('/api/user/cart', {
         method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
+        headers: rootGetters.tokenHeader,
+        body: JSON.stringify({productId})
       })
         .then(res => {
           if (res.status === 200) {
@@ -83,9 +89,10 @@ export const cartModule = {
           console.log(error)
         });
     },
-    removeAll({commit}) {
-      fetch('/cart/delete/all', {
-        method: 'DELETE'
+    removeAll({commit, rootGetters}) {
+      fetch('/api/user/cart/delete/all', {
+        method: 'DELETE',
+        headers: rootGetters.tokenHeader
       })
         .then(res => {
           if (res.status === 200) {

@@ -2,15 +2,21 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const app = express();
-const fsPromise = require('fs').promises;
+
+// history fallback
+const history = require('connect-history-api-fallback');
+app.use(history({
+  htmlAcceptHeaders: ['text/html', 'application/xhtml+xml']
+}));
+
+// passport configuration
+const passport = require('passport');
+require('./passport/passport');
+app.use(passport.initialize());
 
 // body-parser init
-
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// item model for dummy data
-const Product = require('./models/product');
+app.use(bodyParser.urlencoded({extended: true}));
 
 //port listen
 const port = process.env.PORT || 3000;
@@ -21,11 +27,13 @@ mongoose.Promise = global.Promise;
 
 // routes init
 const products = require('./routes/products');
-const cart = require('./routes/carts');
+// const carts = require('./routes/carts');
+const user = require('./routes/users');
 
 // routes set
-app.use('/products', products);
-app.use('/cart', cart);
+app.use('/api/products', passport.authenticate('jwt', { session: false }), products);
+app.use('/api/user', user);
+
 
 
 // static route
@@ -33,18 +41,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 
 mongoose.connect('mongodb://customer:customer777@ds263640.mlab.com:63640/shopping_cart937423434').then(() => {
-  // dummy data
-  // fsPromise.readFile('./server-product-data.json', 'utf-8')
-  //   .then(async (data) => {
-  //     try {
-        // const productsData = JSON.parse(data);
-        // await mongoose.connection.collections.products.drop();
-        // await Product.addProducts(productsData);
-        app.listen(port, () => {
-          console.log(`Server started on port ${port}`)
-        });
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // }).catch(err => console.log(err));
+  app.listen(port, () => {
+    console.log(`Server started on port ${port}`)
+  });
 }).catch(err => console.log(err));
