@@ -53,11 +53,6 @@
         error: null
       }
     },
-    // watch: {
-    //   '$route'() {
-    //     this.fetchData();
-    //   }
-    // },
     methods: {
       ...mapActions(['addProduct']),
 
@@ -71,7 +66,7 @@
           .then(res => {
             this.loading = false;
             if (!res.ok) {
-              throw Error(res.statusText);
+              new Error(res.statusText);
             }
             return res.json();
           })

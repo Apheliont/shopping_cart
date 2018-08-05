@@ -30,82 +30,59 @@ export const cartModule = {
   },
 
   actions: {
-    getCartList({commit, rootGetters}) {
-      fetch('/api/user/cart', {
-        headers: rootGetters.tokenHeader
-      })
+    getCartList({commit}) {
+      fetch('/api/user/cart')
         .then(res => {
-          if (res.status >= 400) {
-            commit('SET_SERVER_AUTHORIZE_RESPONSE', false);
-            return new Error('Доступа нету');
-          } else {
-            commit('SET_SERVER_AUTHORIZE_RESPONSE', true);
-            return res.json();
-          }
+          return res.json();
         })
         .then(data => {
           commit('UPDATE_CART_LIST', data);
         })
-        .catch(error => {
-          console.log(error);
+        .catch(err => {
+          console.log(err);
         })
     },
-    removeProduct({commit, rootGetters}, payload) {
+    removeProduct({commit}, payload) {
       fetch(`/api/user/cart/delete/${payload}`, {
-        method: 'DELETE',
-        headers: rootGetters.tokenHeader
+        method: 'DELETE'
       })
         .then(res => {
-          if (res.status === 200) {
-            return res.json();
-          } else {
-            return Promise.reject(new Error(res.statusText));
-          }
+          return res.json();
         })
         .then(data => {
           commit('UPDATE_CART_LIST', data)
         })
-        .catch(error => {
-          console.log(error)
+        .catch(err => {
+          console.log(err)
         })
     },
-    addProduct({commit, rootGetters}, productId) {
+    addProduct({commit}, productId) {
       fetch('/api/user/cart', {
         method: 'POST',
-        headers: rootGetters.tokenHeader,
         body: JSON.stringify({productId})
       })
         .then(res => {
-          if (res.status === 200) {
-            return res.json();
-          } else {
-            return Promise.reject(new Error(res.statusText));
-          }
+          return res.json();
         })
         .then(data => {
           commit('UPDATE_CART_LIST', data)
         })
-        .catch(error => {
-          console.log(error)
+        .catch(err => {
+          console.log(err)
         });
     },
-    removeAll({commit, rootGetters}) {
+    removeAll({commit}) {
       fetch('/api/user/cart/delete/all', {
-        method: 'DELETE',
-        headers: rootGetters.tokenHeader
+        method: 'DELETE'
       })
         .then(res => {
-          if (res.status === 200) {
-            return res.json();
-          } else {
-            return Promise.reject(new Error(res.statusText));
-          }
+          return res.json();
         })
         .then(data => {
           commit('UPDATE_CART_LIST', data)
         })
-        .catch(error => {
-          console.log(error);
+        .catch(err => {
+          console.log(err);
         });
     }
   }

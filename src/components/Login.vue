@@ -55,9 +55,6 @@
         };
         fetch('/api/user/login', {
           method: 'POST',
-          headers: new Headers({
-            'Content-Type': 'application/json'
-          }),
           body: JSON.stringify(userCredentials)
         })
           .then(res => {

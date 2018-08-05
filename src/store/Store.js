@@ -12,11 +12,8 @@ export const store = new Vuex.Store({
     serverAuthorizeResponse: true
   },
   getters: {
-    tokenHeader(state) {
-      return new Headers({
-        Authorization: `JWT ${state.token}`,
-        'Content-Type': 'application/json'
-      });
+    token(state) {
+      return state.token;
     },
     isLoggedIn(state) {
       return state.token && state.serverAuthorizeResponse;
@@ -33,7 +30,7 @@ export const store = new Vuex.Store({
       state.cartModule.cartList = [];
       router.push({name: 'login'});
     },
-    SET_SERVER_AUTHORIZE_RESPONSE(state, payload) {
+    SERVER_AUTHORIZE_RESPONSE(state, payload) {
       state.serverAuthorizeResponse = payload;
     }
   },

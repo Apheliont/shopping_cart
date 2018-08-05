@@ -41,7 +41,7 @@
         <div class="field is-grouped">
           <p class="control">
             <router-link class="button" :to="{name: 'products', query: {per_page: productsPerPage, page: currentPage}}"
-                         exact>
+                         exact :disabled="!isLoggedIn">
               <span class="icon">
                 <i class="fas fa-tshirt"></i>
               </span>
@@ -51,7 +51,7 @@
             </router-link>
           </p>
           <p class="control">
-            <router-link class="button is-primary" to="/cart">
+            <router-link class="button is-primary" to="/cart" :disabled="!isLoggedIn">
               <span class="icon">
                 <i class="fas fa-shopping-cart"></i>
               </span>
@@ -90,4 +90,5 @@
     top: 0;
     z-index: 100;
   }
+
 </style>
