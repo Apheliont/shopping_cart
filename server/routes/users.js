@@ -12,16 +12,25 @@ jwtOptions.jwtFromRequest = ExctractJWT.fromAuthHeaderWithScheme('jwt');
 jwtOptions.secretOrKey = '80860f8505bc141bb39a010dbf905247';
 
 
-router.post('/register', (req, res) => {
-  User.createUser(req.body, (error, user) => {
-    if (error) {
-      res.status(422).json({
-        message: 'Что-то пошло не так. Повторите попытку позже!'
-      })
-    } else {
-      res.send(user);
-    }
-  });
+router.post('/register', async (req, res) => {
+  const existingUser = await User.getUserByLogin(req.body.login);
+  if (existingUser) {
+    res.status(422).json({
+      message: 'Пользователь с таким Login\'ом уже существует!'
+    });
+  } else {
+    User.createUser(req.body, (error, user) => {
+      if (error) {
+        res.status(422).json({
+          message: 'Что-то пошло не так. Повторите попытку позже!'
+        })
+      } else {
+        res.json({
+          message: 'Регистрация прошла успешно!'
+        })
+      }
+    });
+  }
 });
 
 router.post('/login', function (req, res, next) {

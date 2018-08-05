@@ -1,19 +1,16 @@
 <template>
   <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-    <router-link :to="{ name: 'products', query: {per_page: productsPerPage, page: currentPage - 1}}"
-                 class="pagination-previous" :disabled="currentPage === 1">Назад
-    </router-link>
+    <!--Обход бага с disabled кнопками. Когда кнопка задизэблина но все равно срабатывает -->
+    <a class="pagination-previous" @click.prevent="backwardPagination" :disabled="currentPage === 1">Назад</a>
+    <a class="pagination-next" @click.prevent="forwardPagination" :disabled="currentPage === totalPageCount">Вперед</a>
 
-    <router-link :to="{ name: 'products', query: {per_page: productsPerPage, page: currentPage + 1}}"
-                  class="pagination-next" :disabled="currentPage === totalPageCount">Вперед
-    </router-link>
     <ul class="pagination-list">
       <li>
         <router-link v-if="totalPageCount > 1"
                      class="pagination-link"
                      :class="{'is-current': currentPage === 1}"
                      aria-label="В начало"
-        :to="{name: 'products', query: {per_page: productsPerPage, page: 1}}">1
+                     :to="{name: 'products', query: {per_page: productsPerPage, page: 1}}">1
         </router-link>
       </li>
       <li><span class="pagination-ellipsis" v-if="leftEllipsis && totalPageCount > 1">&hellip;</span></li>
@@ -32,8 +29,8 @@
                      class="pagination-link"
                      :class="{'is-current': currentPage === totalPageCount}"
                      aria-label="В конец"
-        :to="{name: 'products', query: {per_page: productsPerPage, page: totalPageCount}}">
-        {{totalPageCount}}
+                     :to="{name: 'products', query: {per_page: productsPerPage, page: totalPageCount}}">
+          {{totalPageCount}}
         </router-link>
       </li>
       <li>
@@ -97,6 +94,18 @@
       setProductsPerPage(e) {
         const value = e.target.value;
         this.$store.commit('SET_PRODUCTS_PER_PAGE', value);
+      },
+      // Методы для обхода бага с пагинацией задизейбленых кнопок.
+      // Кнопка задизейблина, но все равно срабатывает эвент
+      forwardPagination() {
+        if (this.currentPage < this.totalPageCount) {
+          this.$router.push({name: 'products', query: {per_page: this.productsPerPage, page: this.currentPage + 1}});
+        }
+      },
+      backwardPagination() {
+        if (this.currentPage > 1) {
+          this.$router.push({name: 'products', query: {per_page: this.productsPerPage, page: this.currentPage - 1}});
+        }
       }
     },
     watch: {

@@ -60,6 +60,7 @@
 
 <script>
   import swal from 'sweetalert';
+
   export default {
     name: "Registration",
     data() {
@@ -94,27 +95,31 @@
           email: this.email,
           password: this.password
         };
-        const headers = new Headers({
-          'Content-Type': 'application/json'
-        });
+
         fetch('/api/user/register', {
           method: 'POST',
           body: JSON.stringify(user),
-          headers
         })
           .then(res => {
-            if(res.status) {
-              swal('Ура!', 'Регистрация прошла успешно!', 'success')
-                .then(res => {
-                  if (res) {
-                    this.$router.push({name: 'login'});
-                  }
+            if (res.ok) {
+              res.json()
+                .then(data => {
+                  swal('Ура!', data.message, 'success')
+                    .then(res => {
+                      if (res) {
+                        this.$router.push({name: 'login'});
+                      }
+                    });
                 })
+            } else {
+              res.json()
+                .then(data => {
+                  swal('Ой чтож такое...!', data.message, 'error')
+                });
             }
           })
           .catch(error => {
-            const message = error.response.data.message;
-            swal('Ой неет :(((', message, 'error')
+            swal('Ой неет :(((', 'Сервер сошел с ума =(', 'error')
           })
       }
     }
@@ -122,10 +127,10 @@
 </script>
 
 <style scoped>
-.button-container {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-end;
-  padding-top: 10px;
-}
+  .button-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    padding-top: 10px;
+  }
 </style>
